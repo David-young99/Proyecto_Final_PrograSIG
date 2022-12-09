@@ -1,1 +1,1 @@
-# Proyecto_Final_PrograSIG
+Estudiantes: Alexandra Salazar y David Young
