@@ -1,0 +1,8 @@
+streamlit
+pandas
+geopandas
+plotly
+plotly.express
+folium
+math
+streamlit-folium <= 0.8.0
