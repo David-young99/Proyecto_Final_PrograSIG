@@ -53,7 +53,7 @@ if archivo_registros_presencia is not None:
                                            crs='EPSG:4326')
 
     # Carga de polígonos de ASP
-    asp = gpd.read_file("datos/asp.geojson")
+    asp = gpd.read_file("datos/cantones/cantones.geojson")
 
 
     # Limpieza de datos
