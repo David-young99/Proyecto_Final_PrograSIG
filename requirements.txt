@@ -5,4 +5,4 @@ plotly
 plotly.express
 folium
 math
-streamlit-folium <= 0.8.0
+streamlit-folium == 0.8.0
