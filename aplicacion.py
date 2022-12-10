@@ -3,7 +3,7 @@
 # Fecha de creación: 2022-11-19
 # El código original fue adaptado para cantones por los estudiantes: Alexandra Salazar y David Young
 
-#Version:2  =   commit 
+#Version:2.1  =   commit 
 
 
 import streamlit as st
