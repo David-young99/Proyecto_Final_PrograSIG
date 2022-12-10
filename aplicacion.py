@@ -159,9 +159,7 @@ if datos_usuarios is not None:
         tiles='CartoDB dark_matter', 
         name='CartoDB dark matter').add_to(m)
 
-        # Despliegue del mapa
-        folium_static(m)
-'''
+
         # Capa de coropletas
         folium.Choropleth(
             name="Mapa de coropletas de los registros por cantón",
@@ -175,6 +173,13 @@ if datos_usuarios is not None:
             line_opacity=1,
             legend_name='Cantidad de registros de presencia por cantón',
             smooth_factor=0).add_to(m)
+
+        # Control de capas
+        folium.LayerControl().add_to(m) 
+        # Despliegue del mapa
+        folium_static(m)
+'''
+        
 
         folium.Choropleth(
             name="Mapa de coropletas de los registros por provincia",
@@ -204,8 +209,7 @@ if datos_usuarios is not None:
                                             
    
         
-        # Control de capas
-        folium.LayerControl().add_to(m)    
+           
 
 '''
         
