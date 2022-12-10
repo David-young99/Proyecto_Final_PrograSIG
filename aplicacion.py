@@ -3,7 +3,7 @@
 # Fecha de creación: 2022-11-19
 # El código original fue adaptado para cantones por los estudiantes: Alexandra Salazar y David Young
 
-#Version:0  =   commit 
+#Version:2  =   commit 
 
 
 import streamlit as st
@@ -82,9 +82,10 @@ if datos_usuarios is not None:
     # Cálculo de la cantidad de registros en los cantones
     # "Join" espacial de las capas de cantones y registros de presencia de especies
     can_contienen_registros = can.sjoin(registros, how="left", predicate="contains")
-    # Conteo de registros de presencia en cada cantón
-    can_registros = can_contienen_registros.groupby("cod_canton").agg(cantidad_registros = ("gbifID","count"))
+    # Conteo de registros de presencia en cada provincia
+    can_registros = can_contienen_registros.groupby("cod_canton").agg(cantidad_registros_presencia = ("gbifID","count"))
     can_registros = can_registros.reset_index() # para convertir la serie a dataframe
+
 
 
     #
@@ -98,114 +99,108 @@ if datos_usuarios is not None:
 
     # Definición de columnas de la parte visual de nuestra aplicación, dividará el contenido en dos columnas
     col1, col2 = st.columns(2)
+    col3 = st.columns(1)
+
+
+    # Gráficos de cantidad de registros de presencia por provincia
+    # "Join" para agregar la columna con el conteo a la capa de cantón, nos sirve para conectar pero para el gráfico usará otro atributo de provincia
+    can_registros = can_registros.join(can.set_index('cod_canton'), on='cod_canton', rsuffix='_b')
+    # Dataframe filtrado para usar en graficación
+    can_registros_grafico = can_registros.loc[can_registros['cantidad_registros_presencia'] > 0, 
+                                                            ["provincia", "cantidad_registros_presencia"]].sort_values("cantidad_registros_presencia", ascending=True) #.head(20)
+    can_registros_grafico = can_registros_grafico.set_index('provincia')  
+
 
     with col1:
         # Gráficos de historial de registros de presencia por año
-        st.header('Historial de registros por año')
-
-        # Agrupación y suma
-        suma_redvial_cantones = interseccion_redvial_cantones.groupby(["cod_canton"])["longitud_redvial"].sum()
-
-        # Para convertir la serie en dataframe
-        suma_redvial_cantones = suma_redvial_cantones.reset_index()
-
-        suma_redvial_cantones
-    '''    
-        registros_grp_anio = pd.DataFrame(registros.groupby(registros['stateProvince']).count())
-        registros_grp_anio.columns = ['registros']
-
-        fig = px.bar(registros_grp_anio, 
-                    labels={'stateProvince':'Provincia', 'value':'Cantidad de registros'})
-
-    '''  
-        st.plotly_chart(fig)
-
-    with col2:
-        # Gráficos de estacionalidad de registros de presencia por mes
-        st.header('Estacionalidad de registros por mes')
-        registros_grp_mes = pd.DataFrame(registros.groupby(registros['eventDate'].dt.month).count().eventDate)
-        registros_grp_mes.columns = ['registros']
-
-        fig = px.area(registros_grp_mes, 
-                    labels={'eventDate':'Mes', 'value':'Registros de presencia'})
-        st.plotly_chart(fig)      
-'''
-
-    # Gráficos de cantidad de registros de presencia por can
-    # "Join" para agregar la columna con el conteo a la capa de can
-    can_registros = can_registros.join(can.set_index('cod_canton'), on='cod_canton', rsuffix='_b')
-    # Dataframe filtrado para usar en graficación
-    can_registros_grafico = can_registros.loc[can_registros['cantidad_registros'] > 0, 
-                                                            ["nombre_can", "cantidad_registros"]].sort_values("cantidad_registros", ascending=[False]).head(15)
-    can_registros_grafico = can_registros_grafico.set_index('nombre_can')  
-
-    with col1:
-        st.header('Cantidad de registros por can')
+        st.header('Historial de registros por provincia')
 
         fig = px.bar(can_registros_grafico, 
-                    labels={'nombre_can':'can', 'cantidad_registros':'Registros de presencia'})
+                    labels={'provincia':'Provincia', 'cantidad_registros_presencia':'Registros de presencia'})    
+
+        fig.update_layout(barmode='stack', xaxis={'categoryorder': 'total descending'})
         st.plotly_chart(fig)    
-
-    with col2:        
-        # st.subheader('px.pie()')        
-        st.header('Porcentaje de registros por can')
-        
-        fig = px.pie(can_registros_grafico, 
-                    names=can_registros_grafico.index,
-                    values='cantidad_registros')
-        fig.update_traces(textposition='inside', textinfo='percent+label')
-        st.plotly_chart(fig)    
-
-
-    with col1:
-        # Mapa de calor y de registros agrupados
-        st.header('Mapa de calor y de registros agrupados')
-
-        # Capa base
-        m = folium.Map(location=[9.6, -84.2], tiles='CartoDB dark_matter', zoom_start=8)
-        # Capa de calor
-        HeatMap(data=registros[['decimalLatitude', 'decimalLongitude']],
-                name='Mapa de calor').add_to(m)
-        # Capa de can
-        folium.GeoJson(data=can, name='can').add_to(m)
-        # Capa de registros de presencia agrupados
-        mc = MarkerCluster(name='Registros agrupados')
-        for idx, row in registros.iterrows():
-            if not math.isnan(row['decimalLongitude']) and not math.isnan(row['decimalLatitude']):
-                mc.add_child(Marker([row['decimalLatitude'], row['decimalLongitude']], 
-                                    popup=row['species']))
-        m.add_child(mc)
-        # Control de capas
-        folium.LayerControl().add_to(m)    
-        # Despliegue del mapa
-        folium_static(m)
+ 
+    
+    # Gráficos de cantidad de registros de presencia por cantón
+    # "Join" para agregar la columna con el conteo a la capa de cantón
+    can_registros = can_registros.join(can.set_index('cod_canton'), on='cod_canton', rsuffix='_b')
+    # Dataframe filtrado para usar en graficación
+    can_registros_grafico = can_registros.loc[can_registros['cantidad_registros_presencia'] > 0, 
+                                                            ["canton", "cantidad_registros_presencia"]].sort_values("cantidad_registros_presencia")
+    can_registros_grafico = can_registros_grafico.set_index('canton')  
 
     with col2:
-        # Mapa de coropletas de registros de presencia en can
-        st.header('Mapa de cantidad de registros en can')
+        # Gráficos de historial de registros de presencia por año
+        st.header('Historial de registros por cantón')
+
+        fig = px.bar(can_registros_grafico, 
+                    labels={'canton':'Cantón', 'cantidad_registros_presencia':'a'})    
+
+        fig.update_layout(barmode='stack', xaxis={'categoryorder': 'total descending'})
+        st.plotly_chart(fig)
+
+    with col1:
+        # Mapas de coropletas
+        st.header('Mapa de registros de presencia de especies por provincia, cantón y agrupados')
 
         # Capa base
-        m = folium.Map(location=[9.6, -84.2], tiles='CartoDB positron', zoom_start=8)
+        m = folium.Map(
+        location=[10, -84], 
+        zoom_start=7, 
+        control_scale=True)
+
+        # Se añaden capas base adicionales
+        folium.TileLayer(
+        tiles='CartoDB positron', 
+        name='CartoDB positron').add_to(m)
+
+        folium.TileLayer(
+        tiles='http://services.arcgisonline.com/arcgis/rest/services/NatGeo_World_Map/MapServer/MapServer/tile/{z}/{y}/{x}',
+        name='NatGeo World Map',
+        attr='ESRI NatGeo World Map').add_to(m)
+
         # Capa de coropletas
         folium.Choropleth(
-            name="Cantidad de registros en can",
+            name="Mapa de coropletas de los registros por cantón",
             geo_data=can,
             data=can_registros,
-            columns=['cod_canton', 'cantidad_registros'],
-            bins=8,
+            columns=['cod_canton', 'cantidad_registros_presencia'],
+            bins=3,
             key_on='feature.properties.cod_canton',
             fill_color='Reds', 
             fill_opacity=0.5, 
             line_opacity=1,
-            legend_name='Cantidad de registros de presencia',
+            legend_name='Cantidad de registros de presencia por cantón',
             smooth_factor=0).add_to(m)
+
+        folium.Choropleth(
+            name="Mapa de coropletas de los registros por provincia",
+            geo_data=can,
+            data=can_registros,
+            columns=['cod_provin', 'cantidad_registros_presencia'],
+            bins=3,
+            key_on='feature.properties.cod_provin',
+            fill_color='Reds', 
+            fill_opacity=0.5, 
+            line_opacity=1,
+            legend_name='Cantidad de registros de presencia por provincia',
+            smooth_factor=0).add_to(m)
+
+        # Capa de registros de presencia agrupados
+        mc = MarkerCluster(name='Registros agrupados')
+        for idx, row in registros.iterrows():
+            if not math.isnan(row['decimalLongitude']) and not math.isnan(row['decimalLatitude']):
+                mc.add_child(
+                    Marker([row['decimalLatitude'], row['decimalLongitude'], ], 
+                                    popup= "Nombre de la especie: " + str(row["species"]) + "\n" + "Provincia: " + str(row["stateProvince"]) + "\n" + "Fecha: " + str(row["eventDate"]),
+                                    icon=folium.Icon(color="green")))
+                                            
+        m.add_child(mc)
+
         # Control de capas
-        folium.LayerControl().add_to(m)        
+        folium.LayerControl().add_to(m)    
+
         # Despliegue del mapa
-        folium_static(m)   
+        folium_static(m)
 
-    # Mapa de registros de presencia
-    st.header('Mapa de registros de presencia')
-    st.map(registros.rename(columns = {'decimalLongitude':'longitude', 'decimalLatitude':'latitude'}))
-
-    '''
