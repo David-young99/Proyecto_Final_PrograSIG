@@ -157,11 +157,6 @@ if datos_usuarios is not None:
         tiles='CartoDB positron', 
         name='CartoDB positron').add_to(m)
 
-        folium.TileLayer(
-        tiles='http://services.arcgisonline.com/arcgis/rest/services/NatGeo_World_Map/MapServer/MapServer/tile/{z}/{y}/{x}',
-        name='NatGeo World Map',
-        attr='ESRI NatGeo World Map').add_to(m)
-
         # Capa de coropletas
         folium.Choropleth(
             name="Mapa de coropletas de los registros por cantón",
