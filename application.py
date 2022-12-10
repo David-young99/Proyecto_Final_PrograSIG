@@ -109,8 +109,8 @@ if datos_usuarios is not None:
     can_registros = can_registros.join(can.set_index('CODNUM'), on='CODNUM', rsuffix='_b')
     # Dataframe filtrado para usar en graficación
     can_registros_grafico = can_registros.loc[can_registros['cantidad_registros_presencia'] > 0, 
-                                                            ["NPROVINCIA", "cantidad_registros_presencia"]].sort_values("cantidad_registros_presencia", ascending=True).head(20)
-    can_registros_grafico = can_registros_grafico.set_index('NPROVINCIA')  
+                                                            ["provincia", "cantidad_registros_presencia"]].sort_values("cantidad_registros_presencia", ascending=True) #.head(20)
+    can_registros_grafico = can_registros_grafico.set_index('provincia')  
 
 
     with col1:
@@ -118,7 +118,7 @@ if datos_usuarios is not None:
         st.header('Historial de registros por provincia')
 
         fig = px.bar(can_registros_grafico, 
-                    labels={'NPROVINCIA':'Provincia', 'cantidad_registros_presencia':'Registros de presencia'})    
+                    labels={'provincia':'Provincia', 'cantidad_registros_presencia':'Registros de presencia'})    
 
         fig.update_layout(barmode='stack', xaxis={'categoryorder': 'total descending'})
         st.plotly_chart(fig)    
@@ -161,18 +161,20 @@ if datos_usuarios is not None:
 
 
         # Capa de coropletas
-        folium.Choropleth(
+        can_map = folium.Choropleth(
             name="Mapa de coropletas de los registros por cantón",
             geo_data=can,
             data=can_registros,
             columns=['CODNUM', 'cantidad_registros_presencia'],
-            bins=3,
+            bins=8,
             key_on='feature.properties.CODNUM',
             fill_color='Reds', 
             fill_opacity=0.5, 
             line_opacity=1,
             legend_name='Cantidad de registros de presencia por cantón',
             smooth_factor=0).add_to(m)
+        
+        folium.GeoJsonTooltip(['NCANTON', 'provincia']).add_to(can_map.geojson)
 
 
         # Capa de registros de presencia agrupados
@@ -186,35 +188,32 @@ if datos_usuarios is not None:
         m.add_child(mc)
 
         
+        prov_map = folium.Choropleth(
+            name="Mapa de coropletas de los registros por provincia",
+            geo_data=can,
+            data=can_registros,
+            columns=['provincia', 'cantidad_registros_presencia'],
+            bins=8,
+            key_on='feature.properties.provincia',
+            fill_color='Reds', 
+            fill_opacity=0.5, 
+            line_opacity=1,
+            legend_name='Cantidad de registros de presencia por provincia',
+            smooth_factor=0).add_to(m)
+
+        folium.GeoJsonTooltip(['NCANTON', 'provincia']).add_to(prov_map.geojson)
 
         # Control de capas
         folium.LayerControl().add_to(m) 
         # Despliegue del mapa
         folium_static(m)
 
-        #adsa
-'''
-        
 
-        folium.Choropleth(
-        name="Mapa de coropletas de los registros por provincia",
-        geo_data=can,
-        data=can_registros,
-        columns=['NPROVINCIA', 'cantidad_registros_presencia'],
-        bins=3,
-        key_on='feature.properties.NPROVINCIA',
-        fill_color='Reds', 
-        fill_opacity=0.5, 
-        line_opacity=1,
-        legend_name='Cantidad de registros de presencia por provincia',
-        smooth_factor=0).add_to(m)
+
+        
 
         
       
                                             
    
-        
-           
-
-'''
-        
+    
