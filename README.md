@@ -4,4 +4,4 @@ En primera instancia, se cuenta con un archivo formato GeoJSON, el cual contiene
 
 El código se divide en 4 secciones, la primer sección corresponde a la creación de una tabla que muestra los registros de presencia de la especie seleccionada. La segunda y tercera sección comprenden el código de dos gráficos plotly de barras que muestran la cantidad de registros de la especie seleccionada en cada cantón y provincia de Costa Rica. Por último, la cuarta sección contiene un producto cartográfico con diversas capas de información, 2 mapas base, 2 capas de coropletas  con la información procesada en la segunda y tercera sección y finalmente una capa de puntos agrupados correspondientes a los registros de presencia de la especie seleccionada la cual muestra el nombre de la especie, la provincia, el cantón y la fecha. 
 
-El enlace para visualizar la aplicación Streamlit publicada en Streamlit Cloud lo puede encontrar en el siguiente [enlace]("https://proyectofinal-asalazar-dyoung.streamlit.app/")
+El enlace para visualizar la aplicación Streamlit publicada en Streamlit Cloud lo puede encontrar en el siguiente [enlace](https://proyectofinal-asalazar-dyoung.streamlit.app/)
