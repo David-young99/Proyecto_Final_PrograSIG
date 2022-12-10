@@ -3,7 +3,7 @@
 # Fecha de creación: 2022-11-19
 # El código original fue adaptado para cantones por los estudiantes: Alexandra Salazar y David Young
 
-#Version:2.2.3  =   commit 
+#Version:2.2.4  =   commit 
 
 
 import streamlit as st
@@ -171,6 +171,22 @@ if datos_usuarios is not None:
             legend_name='Cantidad de registros de presencia por cantón',
             smooth_factor=0).add_to(m)
 
+                                            
+        
+
+        # Control de capas
+        folium.LayerControl().add_to(m)    
+
+        # Despliegue del mapa
+        folium_static(m)
+
+    with col2:
+        # Capa base
+        m = folium.Map(
+        location=[10, -84], 
+        zoom_start=7, 
+        control_scale=True)
+
         folium.Choropleth(
             name="Mapa de coropletas de los registros por provincia",
             geo_data=can,
@@ -183,6 +199,20 @@ if datos_usuarios is not None:
             line_opacity=1,
             legend_name='Cantidad de registros de presencia por provincia',
             smooth_factor=0).add_to(m)
+        
+        # Control de capas
+        folium.LayerControl().add_to(m)    
+
+        # Despliegue del mapa
+        folium_static(m)
+
+
+    with col1:
+        # Capa base
+        m = folium.Map(
+        location=[10, -84], 
+        zoom_start=7, 
+        control_scale=True)
 
         # Capa de registros de presencia agrupados
         mc = MarkerCluster(name='Registros agrupados')
@@ -192,7 +222,6 @@ if datos_usuarios is not None:
                     Marker([row['decimalLatitude'], row['decimalLongitude'], ], 
                                     popup= "Nombre de la especie: " + str(row["species"]) + "\n" + "Provincia: " + str(row["stateProvince"]) + "\n" + "Fecha: " + str(row["eventDate"]),
                                     icon=folium.Icon(color="green")))
-                                            
         m.add_child(mc)
 
         # Control de capas
@@ -200,4 +229,3 @@ if datos_usuarios is not None:
 
         # Despliegue del mapa
         folium_static(m)
-
