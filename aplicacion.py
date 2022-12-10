@@ -153,11 +153,15 @@ if datos_usuarios is not None:
         zoom_start=7,
         control_scale=True)
 
+
         # Se añaden capas base adicionales
         folium.TileLayer(
         tiles='CartoDB dark_matter', 
         name='CartoDB dark matter').add_to(m)
 
+        # Despliegue del mapa
+        folium_static(m)
+'''
         # Capa de coropletas
         folium.Choropleth(
             name="Mapa de coropletas de los registros por cantón",
@@ -185,6 +189,8 @@ if datos_usuarios is not None:
             legend_name='Cantidad de registros de presencia por provincia',
             smooth_factor=0).add_to(m)
 
+       
+
         # Capa de registros de presencia agrupados
         mc = MarkerCluster(name='Registros agrupados')
         for idx, row in registros.iterrows():
@@ -194,12 +200,12 @@ if datos_usuarios is not None:
                                     popup= "Nombre de la especie: " + str(row["species"]) + "\n" + "Provincia: " + str(row["stateProvince"]) + "\n" + "Fecha: " + str(row["eventDate"]),
                                     icon=folium.Icon(color="green")))
         m.add_child(mc)
+      
                                             
-        
+   
         
         # Control de capas
         folium.LayerControl().add_to(m)    
 
-        # Despliegue del mapa
-        folium_static(m)
-
+'''
+        
