@@ -55,8 +55,10 @@ if datos_usuarios is not None:
                                                                        registros.decimalLatitude),
                                            crs='EPSG:4326')
 
+
     # Carga de polígonos de los cantones
     can = gpd.read_file("datos/cantones/cantones.geojson")
+
 
 
     # Limpieza de datos
