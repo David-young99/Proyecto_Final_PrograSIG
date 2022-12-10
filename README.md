@@ -1,1 +1,7 @@
-Estudiantes: Alexandra Salazar y David Young
+La presente aplicación permite visualizar un conjunto de tablas, gráficos y mapas correspondientes a la distribución de especies de Costa Rica. 
+
+En primera instancia, se cuenta con un archivo formato GeoJSON, el cual contiene la capa de polígonos de cantones de Costa Rica, publicados por el Instituto Geográfico Nacional (IGN) en el Sistema Nacional de Información Territorial (SNIT). Además, el usuario de la aplicación debe seleccionar un archivo CSV basado en el DwC y posteriormente elegir una de las especies con datos contenidos en el archivo. El archivo debe estar separado por tabuladores. Este tipo de archivos puede obtenerse, en el portal de la Infraestructura Mundial de Información en Biodiversidad (GBIF).
+
+El código se divide en 4 secciones, la primer sección corresponde a la creación de una tabla que muestra los registros de presencia de la especie seleccionada. La segunda y tercera sección comprenden el código de dos gráficos plotly de barras que muestran la cantidad de registros de la especie seleccionada en cada cantón y provincia de Costa Rica. Por último, la cuarta sección contiene un producto cartográfico con diversas capas de información, 2 mapas base, 2 capas de coropletas  con la información procesada en la segunda y tercera sección y finalmente una capa de puntos agrupados correspondientes a los registros de presencia de la especie seleccionada la cual muestra el nombre de la especie, la provincia, el cantón y la fecha. 
+
+El enlace para visualizar la aplicación Streamlit publicada en Streamlit Cloud lo puede encontrar en el siguiente xxxxx
