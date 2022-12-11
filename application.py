@@ -1,7 +1,7 @@
 # Aplicación desarrollada en Streamlit para visualización de datos de biodiversidad
 # Autor: Manuel Vargas (mfvargas@gmail.com)
 # Fecha de creación: 2022-11-19
-# El código original fue adaptado para cantones por los estudiantes: Alexandra Salazar y David Young
+# El código original fue adaptado por los estudiantes: Alexandra Salazar y David Young
 
 #Version:3.1  =   commit 
 
@@ -42,10 +42,10 @@ st.markdown('La aplicación muestra un conjunto de tablas, gráficos y mapas cor
 # ENTRADAS
 #
 
-# Carga de datos subidos por el usuario
+# Carga de datos
 datos_usuarios = st.sidebar.file_uploader('Seleccione un archivo CSV que siga el estándar DwC')
 
-# Se continúa con el procesamiento solo si hay un archivo de datos cargado
+# Procesamiento de datos, solo si hay un archivo de datos cargado
 if datos_usuarios is not None:
     # Carga de registros de presencia en un dataframe con nombre de "registros"
     registros = pd.read_csv(datos_usuarios, delimiter='\t')
@@ -56,7 +56,7 @@ if datos_usuarios is not None:
                                            crs='EPSG:4326')
 
 
-    # Carga de polígonos de los cantones
+    # Carga de poligonos: capa cantones
     can = gpd.read_file("datos/cantones/cantones.geojson")
 
 
@@ -81,10 +81,10 @@ if datos_usuarios is not None:
     # Filtrado
     registros = registros[registros['species'] == filtro_especie]
 
-    # Cálculo de la cantidad de registros en los cantones
+    # Cálculo de la cantidad de registros por cantón
     # "Join" espacial de las capas de cantones y registros de presencia de especies
     can_contienen_registros = can.sjoin(registros, how="left", predicate="contains")
-    # Conteo de registros de presencia en cada provincia
+    # Conteo de registros de presencia por cada provincia
     can_registros = can_contienen_registros.groupby("CODNUM").agg(cantidad_registros_presencia = ("gbifID","count"))
     can_registros = can_registros.reset_index() # para convertir la serie a dataframe
 
@@ -114,7 +114,7 @@ if datos_usuarios is not None:
 
 
     with col1:
-        # Gráficos de historial de registros de presencia por año
+        # Gráficos de historial de registros de presencia por provincia
         st.header('Historial de registros por provincia')
 
         fig = px.bar(can_registros_grafico, 
@@ -133,7 +133,7 @@ if datos_usuarios is not None:
     can_registros_grafico = can_registros_grafico.set_index('NCANTON')  
 
     with col2:
-        # Gráficos de historial de registros de presencia por año
+        # Gráficos de historial de registros de presencia por cantón
         st.header('Historial de registros por cantón')
 
         fig = px.bar(can_registros_grafico, 
