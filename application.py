@@ -3,7 +3,7 @@
 # Fecha de creación: 2022-11-19
 # El código original fue adaptado por los estudiantes: Alexandra Salazar y David Young
 
-#Version:3.1  =   commit 
+#Version:3.2  =   commit 
 
 
 import streamlit as st
