@@ -3,7 +3,7 @@
 # Fecha de creación: 2022-11-19
 # El código original fue adaptado por los estudiantes: Alexandra Salazar y David Young
 
-#Version:5.2.1  =   commit 
+#Version:5.1.2  =   commit 
 
 
 import streamlit as st
@@ -235,3 +235,6 @@ if datos_usuarios is not None:
     folium.LayerControl().add_to(m) 
     # Despliegue del mapa
     folium_static(m, width=1300, height=625)
+
+
+st.subheader("Adaptado y elaborado por Alexandra Salazar y David Young, II Ciclo 2022")
